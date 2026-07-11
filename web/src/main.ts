@@ -22,8 +22,9 @@ if (curlPanel) {
   if (copy) copy.setAttribute('data-copy', cmd)
 }
 
-// the uninstall hint mirrors the selected method (curl host stays dynamic too)
+// the uninstall line mirrors the selected method, in both its text and its copy button's value
 const uninstallCmd = document.getElementById('uninstall-cmd')
+const uninstallCopy = document.getElementById('uninstall-copy')
 const uninstalls: Record<string, string> = {
   brew: 'brew uninstall webbridge',
   curl: `curl -fsSL ${location.origin}/uninstall.sh | bash`,
@@ -42,7 +43,23 @@ for (const tab of itabs) {
     }
     const method = tab.dataset.method ?? 'brew'
     if (uninstallCmd) uninstallCmd.textContent = uninstalls[method]
+    if (uninstallCopy) uninstallCopy.setAttribute('data-copy', uninstalls[method])
   })
+}
+
+// the install commands only run on a mac. the html ships them by default; here we detect a non-mac
+// client and swap in a short "requires macOS" note instead.
+function isMac(): boolean {
+  const ua = (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData
+  if (ua?.platform) return ua.platform === 'macOS'
+  // navigator.platform is "MacIntel" on macs, but ipados reports the same with a touch screen, so
+  // require no touch points to exclude ipad.
+  return /Mac/.test(navigator.platform) && navigator.maxTouchPoints <= 1
+}
+
+if (!isMac()) {
+  document.querySelector('.install')?.setAttribute('hidden', '')
+  document.querySelector('.install-note')?.removeAttribute('hidden')
 }
 
 // copy-to-clipboard on the install line(s)

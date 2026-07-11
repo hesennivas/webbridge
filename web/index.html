@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>webbridge · debug every webview from one native cockpit</title>
+    <meta
+      name="description"
+      content="webbridge is a native macOS cockpit for debugging Android and iOS webviews. It finds every inspectable webview on your connected devices and puts console, network and storage one click away."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="webbridge · debug every webview from one native cockpit" />
+    <meta
+      property="og:description"
+      content="A native macOS cockpit for debugging Android & iOS webviews. Console, network and storage for every inspectable target, one click away."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/bricolage-grotesque-600-latin.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <!-- ══ header ══════════════════════════════════════════════════════ -->
+    <header class="hdr">
+      <div class="wrap nav">
+        <a class="brand" href="/" aria-label="webbridge home">
+          <img class="mark" src="/icon.svg" width="24" height="24" alt="" />
+          <span class="word">webbridge</span>
+        </a>
+        <nav class="nav-links" aria-label="primary">
+          <a class="link" href="#how">how it works</a>
+          <a class="link" href="#panes">what's inside</a>
+          <a class="link" href="https://github.com/hesennivas/webbridge">github</a>
+          <a class="btn btn-primary" href="#install">install</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- ══ hero ══════════════════════════════════════════════════════ -->
+      <section class="hero" aria-label="intro">
+        <div class="wrap hero-inner">
+          <div class="pulse reveal in">
+            <span class="dot"></span>
+            <span>phone plugged in · a live webview, ready to inspect</span>
+          </div>
+          <h1 class="display reveal in d1">
+            debug every webview<br />
+            from one <span class="dim">native cockpit</span>
+          </h1>
+          <p class="lede reveal in d2">
+            webbridge finds every inspectable webview on your connected android and ios devices,
+            then puts console, network and storage one click away. no
+            <span class="dim">chrome://inspect</span> dance, no digging through safari menus.
+          </p>
+          <div class="hero-cta reveal in d3" id="install">
+            <div class="installer">
+              <span class="prompt">$</span>
+              <code>brew install hesennivas/tap/webbridge</code>
+              <button class="copybtn" data-copy="brew install hesennivas/tap/webbridge" aria-label="copy install command">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="12" height="12" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                <span class="lbl">copy</span>
+              </button>
+            </div>
+            <a class="btn btn-ghost btn-lg" href="https://github.com/hesennivas/webbridge">
+              <svg class="gh" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.22-3.37-1.22-.46-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.05 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.3 9.3 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.92-2.34 4.79-4.57 5.04.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z" />
+              </svg>
+              view on github
+            </a>
+          </div>
+
+          <!-- combined product shot: two real captures, find the webview then inspect it live -->
+          <div class="hero-stack reveal d4" aria-label="webbridge: discover a live webview, then inspect it in the built-in console">
+            <img
+              class="win-shot back"
+              src="/shots/overview-ios.png"
+              width="2054"
+              height="1264"
+              alt="webbridge listing a connected iPhone and its inspectable Safari webview"
+            />
+            <img
+              class="win-shot front"
+              src="/shots/console.png"
+              width="2054"
+              height="1264"
+              alt="webbridge's built-in console evaluating javascript against the live webview"
+            />
+            <span class="stack-tag tag-back">find it</span>
+            <span class="stack-tag tag-front">inspect it</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ how it works · animated bridge diagram ═══════════════════════ -->
+      <section class="block alt" id="how" aria-label="how it works">
+        <div class="wrap center">
+          <div class="eyebrow reveal">how it works</div>
+          <h2 class="sec reveal d1">your devices, bridged to your devtools</h2>
+          <p class="sub reveal d2">
+            plug in a phone. webbridge discovers every webview and streams it straight through to
+            chrome devtools or safari web inspector.
+          </p>
+          <div class="flowwrap reveal d2">
+            <div class="flow-diagram" id="flow" role="img"
+              aria-label="three phones stream their webviews into webbridge, which bridges them out to chrome devtools and safari web inspector"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ what's inside (bento) ═════════════════════════════════════ -->
+      <section class="block" id="panes" aria-label="what's inside">
+        <div class="wrap">
+          <div class="eyebrow reveal">what's inside</div>
+          <h2 class="sec reveal d1">a full inspector, not a launcher</h2>
+          <p class="sub reveal d2">
+            webbridge speaks the chrome devtools protocol itself, so the essentials live in the app.
+            the heavyweight tools stay one click away.
+          </p>
+          <div class="bento">
+            <div class="cell reveal d1">
+              <svg class="ci" width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M7 9l3 3-3 3M13 15h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <h3>a real console</h3>
+              <p>levels, live filtering, saved filters, find-and-highlight, and a javascript repl that evaluates in the live page.</p>
+            </div>
+            <div class="cell reveal d2">
+              <svg class="ci" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 7h11M4 7l3-3M4 7l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 17H9M20 17l-3-3M20 17l-3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <h3>network + HAR</h3>
+              <p>every request, method, status and size. export the session to a HAR file for any bug report.</p>
+            </div>
+            <div class="cell reveal d3">
+              <svg class="ci" width="26" height="26" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3" stroke="currentColor" stroke-width="1.6"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <h3>storage at a glance</h3>
+              <p>cookies, localStorage and sessionStorage. read the page's persisted state at a glance.</p>
+            </div>
+            <div class="cell reveal d1">
+              <svg class="ci" width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M7 9h10M7 13h7M7 17h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <h3>device logs, side by side</h3>
+              <p>logcat and idevicesyslog, streamed beside the webview console. filter by source and level to see native and web together.</p>
+            </div>
+            <div class="cell reveal d2">
+              <svg class="ci" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <h3>knows the framework</h3>
+              <p>webbridge tags each webview with what it's running. if a target won't appear, it tells you how to make it inspectable.</p>
+              <div class="frameworks">
+                <span class="fw">Capacitor</span><span class="fw">Flutter</span><span class="fw">React Native</span><span class="fw">plain web</span>
+              </div>
+            </div>
+            <div class="cell reveal d3">
+              <svg class="ci" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M20 4l-9 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <h3>open in your tools</h3>
+              <p>prefer the full suite? send any target straight into chrome devtools or safari web inspector.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ══ footer ══════════════════════════════════════════════════════ -->
+    <footer class="foot">
+      <div class="wrap row">
+        <a class="brand" href="/" aria-label="webbridge home">
+          <img class="mark" src="/icon.svg" width="24" height="24" alt="" />
+          <span class="word">webbridge</span>
+        </a>
+        <p>a native macos cockpit for debugging android &amp; ios webviews</p>
+        <div class="links">
+          <a href="https://github.com/hesennivas/webbridge">github</a>
+          <a href="#install">install</a>
+          <a href="https://github.com/hesennivas/webbridge/blob/main/LICENSE">license</a>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

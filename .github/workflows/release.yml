@@ -1,0 +1,36 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+jobs:
+  release:
+    runs-on: macos-26
+    permissions:
+      contents: write   # create the github release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history to verify the tag is on deploy
+
+      - name: Ensure tag is on the deploy branch
+        run: |
+          git fetch --no-tags origin +refs/heads/deploy:refs/remotes/origin/deploy
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" refs/remotes/origin/deploy; then
+            echo "::error::Tag ${GITHUB_REF_NAME} is not on the deploy branch — releases must be tagged from deploy."
+            exit 1
+          fi
+
+      - run: sudo xcode-select -s /Applications/Xcode_26.app
+      - run: swift build -c release
+      - run: swift test
+
+      # publish the release (github auto-generates the source tarball)
+      - uses: softprops/action-gh-release@v2
+
+      # open the version-bump pr on the tap repo
+      - uses: dawidd6/action-homebrew-bump-formula@v5
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}   # fine-grained pat with write on the tap repo
+          tap: hesennivas/homebrew-tap
+          formula: webbridge
+          tag: ${{ github.ref_name }}

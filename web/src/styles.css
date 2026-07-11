@@ -1,0 +1,263 @@
+/* webbridge landing: minimal monochrome, mirrors passer's design tokens (DESIGN.md §3).
+   white is the only accent; hierarchy comes from size, weight and space. */
+
+:root {
+  color-scheme: dark;
+
+  --ink-0: #000000;
+  --ink-1: #0a0a0a;
+  --ink-2: #131313;
+  --ink-3: #1a1a1a;
+  --ink-4: #242424;
+  --line: #232323;
+  --snow: #ededed;
+  --ash: #b4b4b4;
+  --slate: #8a8a8a;
+  --mute: #7c7c7c; /* ~4.7:1 on --ink-1 — meets WCAG AA for small text */
+
+  --radius-card: 16px;
+  --radius-win: 12px;
+  --radius-field: 10px;
+
+  --wrap: 1120px;
+  --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* self-hosted display face, shared with passer, no render-blocking font request */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/bricolage-grotesque-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--ink-1);
+  color: var(--snow);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+img, svg { max-width: 100%; display: block; }
+
+button:not(:disabled),
+[role="button"] { cursor: pointer; }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 40px; }
+
+.display {
+  font-family: "Bricolage Grotesque", var(--sans);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* ── header ─────────────────────────────────────────────────────────── */
+.hdr {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 0.5px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+.hdr.scrolled { border-bottom-color: var(--line); background: rgba(10, 10, 10, 0.86); }
+.nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand .mark { width: 24px; height: 24px; border-radius: 6px; }
+.brand .word { font-family: "Bricolage Grotesque", var(--sans); font-weight: 600; font-size: 20px; letter-spacing: -0.02em; }
+.nav-links { display: flex; align-items: center; gap: 26px; }
+.nav-links a.link { font-size: 14px; color: var(--slate); transition: color 0.2s; }
+.nav-links a.link:hover { color: var(--snow); }
+
+/* ── buttons ────────────────────────────────────────────────────────── */
+.btn {
+  font-family: inherit; font-size: 14px; font-weight: 500;
+  border-radius: 999px; padding: 9px 17px;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid transparent; background: none; color: var(--snow);
+  transition: transform 0.12s ease, background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--snow); color: #0b0b0b; }
+.btn-primary:hover { background: #fff; }
+.btn-ghost { color: var(--ash); border-color: var(--ink-4); }
+.btn-ghost:hover { color: var(--snow); border-color: #3a3a3a; background: rgba(255,255,255,0.03); }
+.btn-lg { padding: 13px 24px; font-size: 15px; }
+.btn .gh { width: 16px; height: 16px; }
+
+/* ── hero ───────────────────────────────────────────────────────────── */
+.hero { position: relative; padding: 84px 0 96px; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 68% at 82% -12%, rgba(255,255,255,0.075), rgba(255,255,255,0) 58%);
+}
+.hero .wrap { position: relative; }
+
+.pulse {
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid var(--ink-4); border-radius: 999px;
+  padding: 6px 14px 6px 12px; margin-bottom: 28px;
+}
+.pulse .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--snow); flex: 0 0 auto;
+  animation: pulse-dot 2.4s ease-out infinite;
+}
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgba(237,237,237,0.5); }
+  70%, 100% { box-shadow: 0 0 0 9px rgba(237,237,237,0); }
+}
+.pulse span { font-size: 12.5px; color: var(--ash); }
+
+.hero h1 {
+  margin: 0; font-family: "Bricolage Grotesque", var(--sans); font-weight: 600;
+  font-size: clamp(36px, 6.4vw, 82px); line-height: 0.98; letter-spacing: -0.035em;
+}
+.hero h1 .dim { color: var(--mute); }
+.lede {
+  margin: 24px 0 0; font-size: clamp(16px, 1.5vw, 19.5px);
+  color: var(--ash); max-width: 46ch; line-height: 1.55;
+}
+
+/* install code line */
+.installer {
+  margin-top: 22px; display: inline-flex; align-items: center; gap: 12px;
+  background: var(--ink-2); border: 0.5px solid var(--ink-4);
+  border-radius: 12px; padding: 11px 12px 11px 16px; max-width: 100%;
+}
+.installer .prompt { color: var(--mute); font-family: var(--mono); font-size: 13.5px; }
+.installer code { font-family: var(--mono); font-size: 13.5px; color: var(--snow); letter-spacing: 0.01em; overflow-x: auto; }
+.copybtn {
+  flex: 0 0 auto; font-family: inherit; font-size: 11.5px; color: var(--slate);
+  border: 1px solid var(--ink-4); border-radius: 8px; padding: 5px 10px;
+  display: inline-flex; align-items: center; gap: 5px; background: none;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.copybtn:hover { color: var(--snow); border-color: #3a3a3a; background: var(--ink-3); }
+.copybtn.done { color: var(--snow); border-color: #3a3a3a; }
+
+/* centered hero, with the install command brought up into it */
+.hero-inner { text-align: center; }
+.hero-inner .pulse { margin-inline: auto; }
+.hero-inner .lede { margin-left: auto; margin-right: auto; }
+.hero-cta {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 14px; margin-top: 34px;
+}
+.hero-cta .installer { margin-top: 0; }
+
+/* combined product shot: two real captures overlapped: overview (back) + console (front).
+   PNGs already carry rounded window corners + transparent margins, so drop-shadow (follows the
+   alpha) floats them cleanly with no boxy edge. the offset stack reads as: find it → inspect it. */
+.hero-stack {
+  position: relative; margin: 76px auto 0; max-width: 1080px;
+  aspect-ratio: 1120 / 716;
+}
+.win-shot { position: absolute; width: 100%; height: auto; display: block; }
+.win-shot.back {
+  width: 61%; left: 0; top: 3%; z-index: 1;
+  transform: rotate(-4deg);
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.6));
+}
+.win-shot.front {
+  width: 76%; right: 0; bottom: 0; z-index: 2;
+  filter: drop-shadow(0 40px 72px rgba(0, 0, 0, 0.82)) drop-shadow(0 8px 22px rgba(0, 0, 0, 0.5));
+}
+.stack-tag {
+  position: absolute; z-index: 3;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ash); background: rgba(10, 10, 10, 0.66);
+  border: 0.5px solid var(--ink-4); border-radius: 999px; padding: 5px 12px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.stack-tag.tag-back { left: 3%; top: 0; }
+.stack-tag.tag-front { right: 5%; bottom: 7%; }
+
+/* ── section shells ─────────────────────────────────────────────────── */
+.block { padding: 116px 0; border-top: 0.5px solid var(--ink-3); }
+.block.alt { background: #070707; }
+.center { text-align: center; }
+.eyebrow { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mute); }
+h2.sec {
+  margin: 16px 0 0; font-family: "Bricolage Grotesque", var(--sans); font-weight: 600;
+  font-size: clamp(28px, 3.8vw, 46px); letter-spacing: -0.03em; line-height: 1.03;
+}
+.sub { margin: 18px auto 0; font-size: 16px; color: var(--ash); max-width: 52ch; line-height: 1.55; }
+.center .sub { margin-inline: auto; }
+
+/* ── how it works · animated bridge diagram ─────────────────────────── */
+.flowwrap { margin: 60px auto 0; max-width: 940px; }
+.flow-diagram svg { width: 100%; height: auto; display: block; }
+.flow-diagram text { font-family: var(--sans); }
+.flow-diagram .fd-name { fill: var(--ash); font-size: 12px; font-weight: 500; }
+.flow-diagram .fd-wtitle { fill: var(--slate); font-size: 12px; font-weight: 500; }
+.flow-diagram .fd-title { fill: var(--snow); font-size: 12.5px; font-weight: 500; }
+
+/* ── feature bento ──────────────────────────────────────────────────── */
+.bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 60px; }
+.cell {
+  background: var(--ink-2); border: 0.5px solid var(--line); border-radius: 18px;
+  padding: 26px 26px 28px; min-width: 0;
+  transition: background 0.2s, border-color 0.2s, transform 0.12s;
+}
+.cell:hover { background: var(--ink-3); border-color: var(--ink-4); transform: translateY(-3px); }
+.cell .ci { width: 26px; height: 26px; color: var(--snow); }
+.cell h3 { margin: 18px 0 0; font-size: 18px; font-family: "Bricolage Grotesque", var(--sans); font-weight: 600; letter-spacing: -0.01em; }
+.cell p { margin: 9px 0 0; font-size: 13.5px; color: var(--slate); line-height: 1.55; }
+.cell.wide { grid-column: span 2; }
+.cell.tall { grid-row: span 2; display: flex; flex-direction: column; }
+.frameworks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+.fw { font-size: 12px; color: var(--ash); border: 0.5px solid var(--ink-4); border-radius: 8px; padding: 6px 11px; }
+
+/* ── footer ─────────────────────────────────────────────────────────── */
+.foot { border-top: 0.5px solid var(--ink-3); padding: 34px 0; }
+.foot .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.foot .brand .word { font-size: 17px; }
+.foot p { font-size: 13px; color: var(--mute); margin: 0; }
+.foot .links { display: flex; gap: 20px; }
+.foot .links a { font-size: 13px; color: var(--mute); transition: color 0.2s; }
+.foot .links a:hover { color: var(--ash); }
+
+/* ── reveal on scroll ───────────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s cubic-bezier(0.2,0.7,0.2,1), transform 0.7s cubic-bezier(0.2,0.7,0.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.04s; }
+.d2 { transition-delay: 0.12s; }
+.d3 { transition-delay: 0.2s; }
+.d4 { transition-delay: 0.28s; }
+
+/* ── responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 940px) {
+  .wrap { padding: 0 22px; }
+  .nav-links a.link { display: none; }
+  .flowwrap { max-width: 520px; }
+  .bento { grid-template-columns: 1fr; }
+  .cell.wide, .cell.tall { grid-column: auto; grid-row: auto; }
+  .block { padding: 76px 0; }
+  .hero { padding: 60px 0 68px; }
+  /* stack the two windows vertically with a slight overlap instead of the absolute layout */
+  .hero-stack { position: static; aspect-ratio: auto; max-width: 480px; margin-top: 46px; }
+  .win-shot { position: relative; transform: none !important; }
+  .win-shot.back { width: 86%; margin-right: auto; filter: drop-shadow(0 14px 30px rgba(0,0,0,0.6)); }
+  .win-shot.front { width: 94%; margin: -14% 0 0 auto; }
+  .stack-tag { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}

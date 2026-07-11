@@ -1,0 +1,14 @@
+name: CI
+on:
+  push:
+    branches: [develop, deploy]
+  pull_request:
+    branches: [develop, deploy]
+jobs:
+  build-test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo xcode-select -s /Applications/Xcode_26.app
+      - run: swift build -c release
+      - run: swift test

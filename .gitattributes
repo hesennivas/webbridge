@@ -1,0 +1,10 @@
+# excluded from release tarballs (git archive / brew install) — not needed to build the app.
+Tests/                export-ignore
+.github/              export-ignore
+scripts/              export-ignore
+docs/                 export-ignore
+README.md             export-ignore
+.gitignore            export-ignore
+.gitattributes        export-ignore
+icon/AppIcon.svg      export-ignore
+icon/AppIcon-1024.png export-ignore

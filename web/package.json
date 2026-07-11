@@ -1,0 +1,16 @@
+{
+  "name": "webbridge-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "landing site for webbridge — a native macos cockpit for debugging android & ios webviews",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vite": "^6.0.0"
+  }
+}

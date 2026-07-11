@@ -1,0 +1,20 @@
+# binds the port railway provides ($PORT), defaulting to 8080 for local `docker run`.
+:{$PORT:8080} {
+	root * /srv
+	encode zstd gzip
+
+	# hashed vite assets never change → cache hard. html stays fresh.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	@html path *.html /
+	header @html Cache-Control "no-cache"
+
+	# static landing, no client router — fall back to index.html for anything else.
+	try_files {path} /index.html
+	file_server
+
+	log {
+		output stdout
+		format console
+	}
+}

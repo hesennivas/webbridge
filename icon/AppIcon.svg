@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="tile" cx="0.32" cy="0.02" r="1.25">
+      <stop offset="0" stop-color="#191919"/>
+      <stop offset="0.55" stop-color="#070707"/>
+      <stop offset="1" stop-color="#000000"/>
+    </radialGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.38" stop-color="#f1f1f1"/>
+      <stop offset="0.72" stop-color="#bdbdbd"/>
+      <stop offset="1" stop-color="#e9e9e9"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="clip">
+      <rect x="100" y="100" width="824" height="824" rx="185"/>
+    </clipPath>
+    <filter id="ctshadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+    <filter id="gshadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+  </defs>
+
+  <rect x="150" y="176" width="724" height="770" rx="185" fill="#000000" opacity="0.34" filter="url(#ctshadow)"/>
+
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#tile)"/>
+
+  <g clip-path="url(#clip)">
+    <rect x="100" y="100" width="824" height="430" fill="url(#gloss)"/>
+  </g>
+
+  <rect x="101.5" y="101.5" width="821" height="821" rx="183.5" fill="none" stroke="#ffffff" stroke-opacity="0.10" stroke-width="3"/>
+
+  <g transform="translate(0,9)" opacity="0.5" filter="url(#gshadow)">
+    <g fill="none" stroke="#000000" stroke-width="84" stroke-linecap="round">
+      <line x1="407" y1="318" x2="407" y2="706"/>
+      <circle cx="512" cy="428" r="105"/>
+      <circle cx="512" cy="596" r="105"/>
+    </g>
+  </g>
+
+  <g fill="none" stroke="url(#glass)" stroke-width="84" stroke-linecap="round">
+    <line x1="407" y1="318" x2="407" y2="706"/>
+    <circle cx="512" cy="428" r="105"/>
+    <circle cx="512" cy="596" r="105"/>
+  </g>
+</svg>

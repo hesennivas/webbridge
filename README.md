@@ -2,6 +2,16 @@
 
 a native macos cockpit for debugging android & ios webviews.
 
+## install
+
+both methods build from source, so they need the xcode 26 toolchain (swift 6).
+
+```bash
+brew install hesennivas/tap/webbridge
+# or
+curl -fsSL https://webbridge.up.railway.app/install.sh | bash
+```
+
 ## the app
 
 ```bash

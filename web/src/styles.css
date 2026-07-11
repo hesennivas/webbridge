@@ -150,6 +150,21 @@ button:not(:disabled),
 .copybtn:hover { color: var(--snow); border-color: #3a3a3a; background: var(--ink-3); }
 .copybtn.done { color: var(--snow); border-color: #3a3a3a; }
 
+/* two install methods behind small tabs: homebrew · curl */
+.install { display: inline-flex; flex-direction: column; align-items: center; gap: 10px; }
+.install-tabs {
+  display: inline-flex; gap: 4px; padding: 3px;
+  background: var(--ink-2); border: 0.5px solid var(--ink-4); border-radius: 10px;
+}
+.itab {
+  font-family: var(--sans); font-size: 12.5px; color: var(--slate);
+  background: none; border: 0; border-radius: 7px; padding: 6px 15px;
+  transition: color 0.15s, background 0.15s;
+}
+.itab:hover { color: var(--ash); }
+.itab.is-active { color: var(--snow); background: var(--ink-4); }
+.installer[hidden] { display: none; }
+
 /* centered hero, with the install command brought up into it */
 .hero-inner { text-align: center; }
 .hero-inner .pulse { margin-inline: auto; }

@@ -11,6 +11,31 @@ if (hdr) {
   window.addEventListener('scroll', onScroll, { passive: true })
 }
 
+// the curl command points at wherever this page is actually served from, so a new
+// deploy host needs no code change. the hardcoded value in the html is a no-js fallback.
+const curlPanel = document.getElementById('panel-curl')
+if (curlPanel) {
+  const cmd = `curl -fsSL ${location.origin}/install.sh | bash`
+  const code = curlPanel.querySelector('code')
+  const copy = curlPanel.querySelector('.copybtn')
+  if (code) code.textContent = cmd
+  if (copy) copy.setAttribute('data-copy', cmd)
+}
+
+// install method tabs: swap the visible command box (homebrew ↔ curl)
+const itabs = document.querySelectorAll<HTMLButtonElement>('.itab')
+for (const tab of itabs) {
+  tab.addEventListener('click', () => {
+    for (const t of itabs) {
+      const on = t === tab
+      t.classList.toggle('is-active', on)
+      t.setAttribute('aria-selected', String(on))
+      const panel = document.getElementById(t.getAttribute('aria-controls') ?? '')
+      if (panel) panel.hidden = !on
+    }
+  })
+}
+
 // copy-to-clipboard on the install line(s)
 for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
   btn.addEventListener('click', async () => {

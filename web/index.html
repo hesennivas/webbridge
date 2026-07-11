@@ -55,13 +55,27 @@
             <span class="dim">chrome://inspect</span> dance, no digging through safari menus.
           </p>
           <div class="hero-cta reveal in d3" id="install">
-            <div class="installer">
-              <span class="prompt">$</span>
-              <code>brew install hesennivas/tap/webbridge</code>
-              <button class="copybtn" data-copy="brew install hesennivas/tap/webbridge" aria-label="copy install command">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="12" height="12" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
-                <span class="lbl">copy</span>
-              </button>
+            <div class="install" role="group" aria-label="install webbridge">
+              <div class="install-tabs" role="tablist" aria-label="install method">
+                <button class="itab is-active" role="tab" id="tab-brew" aria-controls="panel-brew" aria-selected="true" data-method="brew">homebrew</button>
+                <button class="itab" role="tab" id="tab-curl" aria-controls="panel-curl" aria-selected="false" data-method="curl">curl</button>
+              </div>
+              <div class="installer" id="panel-brew" role="tabpanel" aria-labelledby="tab-brew">
+                <span class="prompt">$</span>
+                <code>brew install hesennivas/tap/webbridge</code>
+                <button class="copybtn" data-copy="brew install hesennivas/tap/webbridge" aria-label="copy install command">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="12" height="12" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="installer" id="panel-curl" role="tabpanel" aria-labelledby="tab-curl" hidden>
+                <span class="prompt">$</span>
+                <code>curl -fsSL https://webbridge.up.railway.app/install.sh | bash</code>
+                <button class="copybtn" data-copy="curl -fsSL https://webbridge.up.railway.app/install.sh | bash" aria-label="copy install command">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="12" height="12" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
             </div>
             <a class="btn btn-ghost btn-lg" href="https://github.com/hesennivas/webbridge">
               <svg class="gh" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

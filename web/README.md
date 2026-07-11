@@ -2,6 +2,10 @@
 
 marketing site for webbridge. vite + typescript, no framework.
 
+## install scripts
+
+`public/install.sh` and `public/uninstall.sh`, served at the site root.
+
 ## develop
 
 ```bash

@@ -26,6 +26,13 @@ jobs:
       # publish the release (github auto-generates the source tarball)
       - uses: softprops/action-gh-release@v2
 
+      # homebrew 6.0 requires third-party taps to be trusted before their
+      # formulae can be loaded; trust ours so the bump action can read it.
+      - name: Trust the tap
+        run: |
+          brew tap hesennivas/homebrew-tap
+          brew trust hesennivas/homebrew-tap
+
       # open the version-bump pr on the tap repo
       - uses: dawidd6/action-homebrew-bump-formula@v5
         with:

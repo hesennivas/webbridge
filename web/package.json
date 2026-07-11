@@ -1,7 +1,7 @@
 {
   "name": "webbridge-web",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "landing site for webbridge — a native macos cockpit for debugging android & ios webviews",
   "scripts": {

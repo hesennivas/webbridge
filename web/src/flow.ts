@@ -54,15 +54,14 @@ export function initFlow() {
 
   const svg = el('svg', { viewBox: `0 0 ${VB_W} ${VB_H}`, xmlns: NS })
 
-  // glow filter for the streaming dots
+  // dot glow faked with a radial gradient rather than a per-element blur: an feGaussianBlur on each
+  // of the ~90 moving dots re-rasterizes every frame, which is what made this heavy on mobile.
   const defs = el('defs')
-  const glow = el('filter', { id: 'fd-glow', x: '-300%', y: '-300%', width: '700%', height: '700%' })
-  glow.appendChild(el('feGaussianBlur', { stdDeviation: 1.5, result: 'b' }))
-  const merge = el('feMerge')
-  merge.appendChild(el('feMergeNode', { in: 'b' }))
-  merge.appendChild(el('feMergeNode', { in: 'SourceGraphic' }))
-  glow.appendChild(merge)
-  defs.appendChild(glow)
+  const grad = el('radialGradient', { id: 'fd-dot', cx: '0.5', cy: '0.5', r: '0.5' })
+  grad.appendChild(el('stop', { offset: '0%', 'stop-color': '#fff', 'stop-opacity': 1 }))
+  grad.appendChild(el('stop', { offset: '38%', 'stop-color': '#fff', 'stop-opacity': 0.85 }))
+  grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#fff', 'stop-opacity': 0 }))
+  defs.appendChild(grad)
   svg.appendChild(defs)
 
   // ── wires: dim guide + white lit line, both for every leg ──
@@ -94,7 +93,7 @@ export function initFlow() {
   win.appendChild(el('path', { d: `M${WX} ${WY + 13} a13 13 0 0 1 13 -13 h${WW - 26} a13 13 0 0 1 13 13 v21 h${-WW} z`, fill: 'var(--ink-3)' }))
   ;[0, 1, 2].forEach((i) => win.appendChild(el('circle', { cx: WX + 16 + i * 13, cy: WY + 17, r: 4, fill: '#2c2c2c' })))
   win.appendChild(text(WX + WW / 2, WY + 21, 'fd-wtitle', 'webbridge', 'middle'))
-  const hub = el('circle', { cx: WX + WW / 2, cy: WY + 34 + (WH - 34) / 2, r: 30, fill: 'none', stroke: '#fff', opacity: 0, filter: 'url(#fd-glow)' })
+  const hub = el('circle', { cx: WX + WW / 2, cy: WY + 34 + (WH - 34) / 2, r: 30, fill: 'none', stroke: '#fff', opacity: 0 })
   win.appendChild(hub)
   const iconSize = 46
   win.appendChild(el('image', { href: '/icon.svg', x: WX + WW / 2 - iconSize / 2, y: WY + 34 + (WH - 34) / 2 - iconSize / 2, width: iconSize, height: iconSize, opacity: 0.96 }))
@@ -139,8 +138,8 @@ export function initFlow() {
   })
 
   // ── ports + non-uniform streams (top layer) ──
-  const portIn = el('circle', { cx: INLET.x, cy: INLET.y, r: 4.5, fill: 'none', stroke: '#fff', opacity: 0, filter: 'url(#fd-glow)' })
-  const portOut = el('circle', { cx: OUTLET.x, cy: OUTLET.y, r: 4.5, fill: 'none', stroke: '#fff', opacity: 0, filter: 'url(#fd-glow)' })
+  const portIn = el('circle', { cx: INLET.x, cy: INLET.y, r: 4.5, fill: 'none', stroke: '#fff', opacity: 0 })
+  const portOut = el('circle', { cx: OUTLET.x, cy: OUTLET.y, r: 4.5, fill: 'none', stroke: '#fff', opacity: 0 })
   svg.appendChild(portIn)
   svg.appendChild(portOut)
 
@@ -149,7 +148,8 @@ export function initFlow() {
     const K = isIn ? 12 : 8
     const dots: Dot[] = []
     for (let k = 0; k < K; k++) {
-      const c = el('circle', { r: rnd(0.9, 1.7), fill: '#fff', opacity: 0, filter: 'url(#fd-glow)' })
+      // larger radius than the old crisp core: the gradient's fade supplies the halo the blur did
+      const c = el('circle', { r: rnd(2.4, 3.8), fill: 'url(#fd-dot)', opacity: 0 })
       svg.appendChild(c)
       dots.push({ c, off: Math.random(), spd: rnd(0.78, 1.28) })
     }
@@ -158,35 +158,66 @@ export function initFlow() {
 
   host.appendChild(svg)
 
-  const start = performance.now()
+  // reduced motion: render the wired-up end state once and never start a loop.
+  if (reduced) {
+    litWires.forEach((w) => w.setAttribute('opacity', '0.3'))
+    streams.forEach((s) => s.dots.forEach((dt) => dt.c.setAttribute('opacity', '0')))
+    return
+  }
 
   function frame(now: number) {
-    const abs = now - start
-    const intro = reduced ? 1 : clamp01(abs / 750)
+    // pause-aware clock: elapsed only advances while running, so the intro and dot phases stay
+    // continuous across scroll/visibility pauses (no teleport).
+    const abs = elapsed + (now - resumeAt)
+    const intro = clamp01(abs / 750)
 
     litWires.forEach((w) => w.setAttribute('opacity', String(intro * 0.3)))
 
-    if (!reduced) {
-      streams.forEach((s) => {
-        s.dots.forEach((dt) => {
-          const ph = ((abs / s.period) * dt.spd + dt.off) % 1
-          dt.c.setAttribute('cx', String(lerp(s.from.x, s.to.x, ph)))
-          dt.c.setAttribute('cy', String(lerp(s.from.y, s.to.y, ph)))
-          const edge = Math.min(clamp01(ph / 0.08), clamp01((1 - ph) / 0.12))
-          dt.c.setAttribute('opacity', String(edge * 0.92 * intro))
-        })
+    streams.forEach((s) => {
+      s.dots.forEach((dt) => {
+        const ph = ((abs / s.period) * dt.spd + dt.off) % 1
+        dt.c.setAttribute('cx', String(lerp(s.from.x, s.to.x, ph)))
+        dt.c.setAttribute('cy', String(lerp(s.from.y, s.to.y, ph)))
+        const edge = Math.min(clamp01(ph / 0.08), clamp01((1 - ph) / 0.12))
+        dt.c.setAttribute('opacity', String(edge * 0.92 * intro))
       })
-      const pulse = 0.24 + 0.12 * Math.sin(abs / 240)
-      portIn.setAttribute('opacity', String(pulse * intro))
-      portOut.setAttribute('opacity', String(pulse * intro))
-      portIn.setAttribute('r', String(4.5 + 1.2 * Math.sin(abs / 240)))
-      portOut.setAttribute('r', String(4.5 + 1.2 * Math.sin(abs / 240)))
-      hub.setAttribute('opacity', String((0.05 + 0.05 * Math.sin(abs / 300)) * intro))
-    } else {
-      streams.forEach((s) => s.dots.forEach((dt) => dt.c.setAttribute('opacity', '0')))
-    }
+    })
+    const pulse = 0.24 + 0.12 * Math.sin(abs / 240)
+    portIn.setAttribute('opacity', String(pulse * intro))
+    portOut.setAttribute('opacity', String(pulse * intro))
+    portIn.setAttribute('r', String(4.5 + 1.2 * Math.sin(abs / 240)))
+    portOut.setAttribute('r', String(4.5 + 1.2 * Math.sin(abs / 240)))
+    hub.setAttribute('opacity', String((0.05 + 0.05 * Math.sin(abs / 300)) * intro))
 
-    requestAnimationFrame(frame)
+    rafId = requestAnimationFrame(frame)
   }
-  requestAnimationFrame(frame)
+
+  // run the loop only while the diagram is on-screen and the tab is visible; off-screen it fully
+  // stops so it no longer competes with scrolling or drains battery.
+  let elapsed = 0
+  let resumeAt = 0
+  let rafId = 0
+  let onScreen = false
+
+  function play() {
+    if (rafId) return
+    resumeAt = performance.now()
+    rafId = requestAnimationFrame(frame)
+  }
+  function pause() {
+    if (!rafId) return
+    elapsed += performance.now() - resumeAt
+    cancelAnimationFrame(rafId)
+    rafId = 0
+  }
+  const sync = () => (onScreen && !document.hidden ? play() : pause())
+
+  new IntersectionObserver(
+    (entries) => {
+      onScreen = entries[0].isIntersecting
+      sync()
+    },
+    { threshold: 0.01 },
+  ).observe(host)
+  document.addEventListener('visibilitychange', sync)
 }

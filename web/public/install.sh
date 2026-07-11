@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# webbridge installer — builds the app from source and drops it in /Applications.
+# webbridge installer - builds the app from source and drops it in /Applications.
 #
 # run it straight from wherever this site is hosted:
 #   curl -fsSL <host>/install.sh | bash
@@ -23,20 +23,20 @@ command -v swift >/dev/null 2>&1 || die "the swift toolchain is required (xcode 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-say "cloning webbridge $VERSION…"
+say "cloning webbridge $VERSION ..."
 git clone --depth 1 --branch "$VERSION" "$REPO" "$TMP/src" >/dev/null 2>&1 \
   || die "could not clone $REPO at tag $VERSION."
 cd "$TMP/src"
 
-say "building the release binary (this takes a few minutes)…"
+say "building the release binary (this takes a few minutes) ..."
 swift build --disable-sandbox -c release
 
-say "assembling $APP…"
+say "assembling $APP ..."
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp .build/release/WebBridge     "$APP/Contents/MacOS/WebBridge"
 cp Sources/WebBridge/Info.plist "$APP/Contents/Info.plist"
 cp icon/AppIcon.icns            "$APP/Contents/Resources/AppIcon.icns"
 
-say "installed → $APP"
+say "installed -> $APP"
 echo "open it with:  open \"$APP\""

@@ -22,6 +22,13 @@ if (curlPanel) {
   if (copy) copy.setAttribute('data-copy', cmd)
 }
 
+// the uninstall hint mirrors the selected method (curl host stays dynamic too)
+const uninstallCmd = document.getElementById('uninstall-cmd')
+const uninstalls: Record<string, string> = {
+  brew: 'brew uninstall webbridge',
+  curl: `curl -fsSL ${location.origin}/uninstall.sh | bash`,
+}
+
 // install method tabs: swap the visible command box (homebrew ↔ curl)
 const itabs = document.querySelectorAll<HTMLButtonElement>('.itab')
 for (const tab of itabs) {
@@ -33,6 +40,8 @@ for (const tab of itabs) {
       const panel = document.getElementById(t.getAttribute('aria-controls') ?? '')
       if (panel) panel.hidden = !on
     }
+    const method = tab.dataset.method ?? 'brew'
+    if (uninstallCmd) uninstallCmd.textContent = uninstalls[method]
   })
 }
 
